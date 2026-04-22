@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SteelXchange — Steel Bar Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #F5F4F1;
+    --surface:  #FFFFFF;
+    --surface2: #F0EDE8;
+    --border:   rgba(0,0,0,0.1);
+    --border2:  rgba(0,0,0,0.18);
+    --text:     #1A1917;
+    --text2:    #5A574F;
+    --text3:    #9B9890;
+    --accent:   #D85A30;
+    --accent2:  #993C1D;
+    --green:    #1D9E75;
+    --green2:   #0F6E56;
+    --blue:     #185FA5;
+    --amber:    #854F0B;
+    --red:      #A32D2D;
+    --sidebar:  #1A1917;
+    --sidebar-text: rgba(255,255,255,0.6);
+    --sidebar-active: rgba(255,255,255,0.1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; display: flex; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px; min-width: 220px; background: var(--sidebar);
+    display: flex; flex-direction: column; height: 100vh;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 20px 18px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .logo-mark { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.05em; font-family: 'Barlow Condensed', sans-serif; }
+  .logo-text { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: #fff; margin-left: 6px; }
+  .logo-sub { font-size: 10px; color: var(--sidebar-text); margin-top: 4px; letter-spacing: 0.05em; text-transform: uppercase; font-family: 'Barlow Condensed', sans-serif; }
+
+  .sidebar-nav { flex: 1; padding: 10px 10px; overflow-y: auto; }
+  .nav-section-label {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3);
+    padding: 14px 8px 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px; border-radius: 7px; cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--sidebar-text); transition: all 0.15s; margin-bottom: 2px;
+    border: none; background: transparent; width: 100%; text-align: left;
+  }
+  .nav-item:hover { background: var(--sidebar-active); color: rgba(255,255,255,0.85); }
+  .nav-item.active { background: var(--accent); color: #fff; }
+  .nav-item svg { flex-shrink: 0; }
+  .nav-badge { margin-left: auto; background: var(--accent); color: #fff; font-size: 9px; padding: 1px 5px; border-radius: 8px; font-weight: 700; }
+  .nav-item.active .nav-badge { background: rgba(255,255,255,0.3); }
+
+  .sidebar-user {
+    padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #FAECE7; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; color: #993C1D; flex-shrink: 0; }
+  .user-name { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.85); }
+  .user-role { font-size: 10px; color: var(--sidebar-text); }
+  .verified-pill { display: flex; align-items: center; gap: 3px; background: rgba(29,158,117,0.2); color: #5DCAA5; font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; margin-top: 2px; }
+  .v-dot { width: 5px; height: 5px; border-radius: 50%; background: #5DCAA5; }
+
+  /* ── MAIN ── */
+  .main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+  .topbar {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 54px; display: flex; align-items: center;
+    justify-content: space-between; flex-shrink: 0; position: sticky; top: 0; z-index: 50;
+  }
+  .topbar-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--text); }
+  .topbar-sub { font-size: 12px; color: var(--text3); margin-top: 1px; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .tb-btn { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; transition: all 0.15s; }
+  .tb-btn:hover { background: var(--surface2); color: var(--text); }
+  .tb-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tb-btn.primary:hover { background: var(--accent2); }
+
+  .page { display: none; flex: 1; overflow-y: auto; padding: 22px 24px; }
+  .page.active { display: block; }
+
+  /* ── SHARED COMPONENTS ── */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+  .card-pad { padding: 18px; }
+  .section-label { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
+  .badge { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; display: inline-block; }
+  .b-sell { background: #FAECE7; color: #993C1D; }
+  .b-buy  { background: #E1F5EE; color: #0F6E56; }
+  .b-urgent { background: #FAEEDA; color: #854F0B; }
+  .b-verified { background: #E1F5EE; color: #0F6E56; }
+  .b-pending  { background: #FAEEDA; color: #854F0B; }
+  .b-expiring { background: #FCEBEB; color: #A32D2D; }
+  .b-best { background: #E1F5EE; color: #0F6E56; }
+  .b-fast { background: #FAEEDA; color: #854F0B; }
+  .b-rated { background: #E6F1FB; color: #185FA5; }
+  .up { color: #1D9E75; } .dn { color: #E24B4A; } .flat-c { color: var(--text3); }
+
+  .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 18px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; }
+  .stat-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
+  .stat-val { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); }
+  .stat-val.o { color: var(--accent); }
+  .stat-val.g { color: var(--green); }
+
+  .filter-bar { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+  .search-input { border: 1px solid var(--border2); border-radius: 7px; padding: 8px 12px; font-size: 13px; background: var(--surface); color: var(--text); font-family: 'Barlow', sans-serif; min-width: 260px; }
+  .search-input:focus { outline: none; border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text3); }
+  .pill { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 6px 13px; border-radius: 20px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .pill:hover:not(.active) { border-color: var(--accent); color: var(--text); }
+
+  /* ── MARKETPLACE ── */
+  .listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; }
+  .listing-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+  .listing-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+  .lc-img { height: 90px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 36px; border-bottom: 1px solid var(--border); position: relative; }
+  .lc-badge { position: absolute; top: 8px; left: 8px; }
+  .lc-body { padding: 12px 14px; }
+  .lc-title { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .lc-meta { font-size: 11px; color: var(--text2); margin-bottom: 10px; line-height: 1.5; }
+  .lc-footer { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--border); padding-top: 10px; }
+  .lc-price { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--accent); }
+  .lc-unit { font-size: 10px; color: var(--text3); }
+  .lc-seller { font-size: 11px; color: var(--text3); text-align: right; }
+  .contact-btn { display: block; margin-top: 8px; text-align: center; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; padding: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text2); cursor: pointer; transition: all 0.15s; width: 100%; }
+  .contact-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ── PROFILE ── */
+  .profile-grid { display: grid; grid-template-columns: 260px 1fr; gap: 16px; }
+  .profile-sidebar { display: flex; flex-direction: column; gap: 12px; }
+  .avatar-big { width: 56px; height: 56px; border-radius: 50%; background: #FAECE7; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: #993C1D; margin-bottom: 10px; }
+  .meta-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .meta-row:last-child { border-bottom: none; }
+  .meta-key { color: var(--text3); font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mini-stat { background: var(--surface2); border-radius: 7px; padding: 10px 12px; }
+  .mini-label { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 2px; }
+  .mini-val { font-family: 'Barlow Condensed', sans-serif; font-size: 19px; font-weight: 700; }
+  .tab-row { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
+  .tab-btn { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 10px 16px; border: none; background: transparent; cursor: pointer; color: var(--text3); border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+  .doc-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .doc-row:last-child { border-bottom: none; }
+
+  /* ── MESSAGES ── */
+  .msg-layout { display: grid; grid-template-columns: 280px 1fr; height: calc(100vh - 54px); gap: 0; margin: -22px -24px; }
+  .msg-sidebar { background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+  .msg-sidebar-head { padding: 14px; border-bottom: 1px solid var(--border); }
+  .thread-list { overflow-y: auto; flex: 1; }
+  .thread { display: flex; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; }
+  .thread:hover { background: var(--surface2); }
+  .thread.active { background: #FAECE7; border-left: 3px solid var(--accent); padding-left: 11px; }
+  .t-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .t-info { flex: 1; min-width: 0; }
+  .t-top { display: flex; justify-content: space-between; margin-bottom: 2px; }
+  .t-name { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .t-time { font-size: 10px; color: var(--text3); flex-shrink: 0; margin-left: 6px; }
+  .t-subject { font-size: 11px; color: var(--accent); font-family: 'Barlow Condensed', sans-serif; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .t-preview { font-size: 11px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .unread-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 5px; }
+  .msg-main { display: flex; flex-direction: column; overflow: hidden; }
+  .chat-head { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 18px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .chat-actions { margin-left: auto; display: flex; gap: 6px; }
+  .listing-banner { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .messages-area { flex: 1; overflow-y: auto; padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
+  .bubble-wrap { display: flex; flex-direction: column; }
+  .bubble-wrap.mine { align-items: flex-end; }
+  .bubble-wrap.theirs { align-items: flex-start; }
+  .sender-name { font-size: 10px; color: var(--text3); margin-bottom: 3px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.04em; text-transform: uppercase; }
+  .bubble { max-width: 68%; padding: 9px 13px; border-radius: 10px; font-size: 13px; line-height: 1.55; }
+  .bubble.mine { background: var(--accent); color: #fff; border-radius: 10px 10px 2px 10px; }
+  .bubble.theirs { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 10px 10px 10px 2px; }
+  .btime { font-size: 10px; color: var(--text3); margin-top: 3px; }
+  .quick-btns { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 14px 0; }
+  .quick { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .quick:hover { border-color: var(--accent); color: var(--accent); }
+  .msg-input-row { background: var(--surface); border-top: 1px solid var(--border); padding: 10px 14px; display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0; }
+  .msg-textarea { flex: 1; border: 1px solid var(--border2); border-radius: 8px; padding: 8px 11px; font-size: 13px; background: var(--surface2); color: var(--text); font-family: 'Barlow', sans-serif; resize: none; min-height: 38px; max-height: 90px; line-height: 1.4; }
+  .msg-textarea:focus { outline: none; border-color: var(--accent); }
+  .send-btn { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 9px 16px; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; flex-shrink: 0; }
+  .send-btn:hover { background: var(--accent2); }
+  .rfq-inline { background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; padding: 12px 14px; max-width: 68%; }
+  .rfq-inline-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .rfq-row { display: flex; justify-content: space-between; font-size: 12px; padding: 3px 0; border-bottom: 1px solid var(--border); }
+  .rfq-row:last-of-type { border-bottom: none; }
+  .rfq-inline-btns { display: flex; gap: 8px; margin-top: 10px; }
+  .rfq-btn { flex: 1; padding: 6px; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; border: 1px solid var(--border2); background: transparent; color: var(--text2); transition: all 0.15s; }
+  .rfq-btn.acc { background: var(--green); border-color: var(--green); color: #fff; }
+  .rfq-btn.acc:hover { background: var(--green2); }
+  .rfq-btn:hover:not(.acc) { background: var(--surface2); }
+
+  /* ── RFQ ── */
+  .rfq-layout { display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
+  .rfq-steps { display: flex; align-items: center; margin-bottom: 20px; }
+  .step-circle { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; border: 1px solid var(--border2); background: var(--surface2); color: var(--text3); z-index: 1; flex-shrink: 0; }
+  .step-circle.done { background: var(--green); border-color: var(--green); color: #fff; }
+  .step-circle.act  { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .step-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text3); margin-top: 5px; text-align: center; }
+  .step-label.done { color: var(--green); } .step-label.act { color: var(--accent); }
+  .step-line { flex: 1; height: 1px; background: var(--border); margin-top: -14px; }
+  .step-line.done { background: var(--green); }
+  .step-col { display: flex; flex-direction: column; align-items: center; }
+  .quote-card { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 10px; transition: border-color 0.15s; }
+  .quote-card:hover { border-color: var(--accent); }
+  .qc-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface2); border-bottom: 1px solid var(--border); }
+  .qc-supplier { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .qc-body { padding: 12px 14px; }
+  .qc-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; border-bottom: 1px solid var(--border); }
+  .qc-row:last-of-type { border-bottom: none; }
+  .qc-price { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent); }
+  .qc-actions { display: flex; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--border); background: var(--surface2); }
+  .qbtn { flex: 1; padding: 7px; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; border: 1px solid var(--border2); background: transparent; color: var(--text2); transition: all 0.15s; }
+  .qbtn:hover { background: var(--surface); } .qbtn.acc { background: var(--green); border-color: var(--green); color: #fff; }
+  .qbtn.acc:hover { background: var(--green2); }
+  .sum-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .sum-row:last-child { border-bottom: none; }
+  .tl-item { display: flex; gap: 10px; padding-bottom: 12px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; width: 18px; flex-shrink: 0; }
+  .tl-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .tl-dot.done { background: var(--green); } .tl-dot.act { background: var(--accent); } .tl-dot.pend { background: var(--border2); }
+  .tl-line { width: 1px; flex: 1; background: var(--border); margin-top: 2px; }
+  .tl-content { flex: 1; }
+  .tl-label { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; }
+  .tl-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  /* ── PRICE TRACKER ── */
+  .pt-layout { display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
+  .ticker-strip { display: flex; gap: 10px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 2px; }
+  .ticker { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; flex-shrink: 0; min-width: 145px; cursor: pointer; transition: border-color 0.15s; }
+  .ticker.sel { border-color: var(--accent); }
+  .ticker:hover:not(.sel) { border-color: var(--border2); }
+  .ticker-name { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+  .ticker-price { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; }
+  .ticker-chg { font-size: 11px; font-weight: 500; margin-top: 2px; }
+  .range-pills { display: flex; gap: 4px; margin-bottom: 14px; }
+  .range-btn { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border2); background: transparent; color: var(--text3); cursor: pointer; transition: all 0.15s; }
+  .range-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .range-btn:hover:not(.active) { color: var(--text); border-color: var(--text2); }
+  .chart-wrap { position: relative; height: 200px; margin-bottom: 14px; }
+  .pt-tooltip { position: absolute; background: var(--surface); border: 1px solid var(--border2); border-radius: 6px; padding: 6px 10px; font-size: 11px; pointer-events: none; display: none; z-index: 5; }
+  .region-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .region-row:last-child { border-bottom: none; }
+  .news-item { padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .news-item:last-child { border-bottom: none; }
+  .news-title { font-size: 12px; font-weight: 500; margin-bottom: 2px; line-height: 1.4; cursor: pointer; color: var(--text); }
+  .news-title:hover { color: var(--accent); }
+  .news-meta { font-size: 11px; color: var(--text3); }
+  .nb { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; padding: 1px 6px; border-radius: 3px; margin-right: 4px; }
+  .nb-bull { background: #E1F5EE; color: #0F6E56; } .nb-bear { background: #FCEBEB; color: #A32D2D; } .nb-neu { background: var(--surface2); color: var(--text2); }
+  .alert-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .alert-input { flex: 1; border: 1px solid var(--border2); border-radius: 6px; padding: 7px 10px; font-size: 13px; background: var(--surface2); color: var(--text); font-family: 'Barlow', sans-serif; max-width: 100px; }
+  .alert-input:focus { outline: none; border-color: var(--accent); }
+  .alert-select { flex: 1; border: 1px solid var(--border2); border-radius: 6px; padding: 7px 10px; font-size: 12px; background: var(--surface2); color: var(--text); font-family: 'Barlow', sans-serif; }
+  .alert-tag { display: flex; align-items: center; gap: 6px; background: #FAEEDA; border: 1px solid #EF9F27; border-radius: 6px; padding: 5px 10px; margin-top: 6px; font-size: 12px; color: #854F0B; }
+  .alert-tag-x { cursor: pointer; color: #BA7517; font-size: 14px; margin-left: auto; font-weight: 700; }
+
+  /* ── DOCUMENT VAULT ── */
+  .dv-layout { display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
+  .dv-doc-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: all 0.1s; }
+  .dv-doc-row:last-child { border-bottom: none; }
+  .dv-doc-row:hover { padding-left: 6px; padding-right: 6px; margin: 0 -6px; background: var(--surface2); border-radius: 4px; }
+  .dv-doc-row.sel { background: #FAECE7; border-left: 3px solid var(--accent); padding-left: 10px; margin-left: -3px; }
+  .doc-icon { width: 34px; height: 42px; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'Barlow Condensed', sans-serif; font-size: 8px; font-weight: 700; }
+  .doc-icon.pdf { background: #FAECE7; color: #993C1D; border: 1px solid #F5C4B3; }
+  .doc-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+  .doc-meta { font-size: 11px; color: var(--text3); display: flex; gap: 8px; }
+  .preview-panel { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .preview-head { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 12px 14px; }
+  .preview-body { padding: 14px; }
+  .preview-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .preview-row:last-of-type { border-bottom: none; }
+  .preview-actions { padding: 12px 14px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; background: var(--surface2); }
+  .exp-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .exp-row:last-child { border-bottom: none; }
+  .share-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .share-row:last-child { border-bottom: none; }
+  .toggle { width: 32px; height: 18px; border-radius: 9px; border: none; cursor: pointer; position: relative; transition: background 0.2s; flex-shrink: 0; }
+  .toggle.on { background: var(--green); } .toggle.off { background: var(--border2); }
+  .toggle-knob { position: absolute; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: left 0.2s; }
+  .toggle.on .toggle-knob { left: 16px; } .toggle.off .toggle-knob { left: 2px; }
+
+  /* ── NOTIFICATIONS ── */
+  .nt-layout { display: grid; grid-template-columns: 1fr 280px; gap: 16px; }
+  .nt-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; cursor: pointer; transition: border-color 0.15s; margin-bottom: 6px; }
+  .nt-item:hover { border-color: var(--border2); }
+  .nt-item.unread { border-left: 3px solid var(--accent); padding-left: 11px; background: #FAECE7; }
+  .nt-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .nt-content { flex: 1; }
+  .nt-top { display: flex; justify-content: space-between; margin-bottom: 3px; }
+  .nt-title { font-size: 13px; font-weight: 500; line-height: 1.4; }
+  .nt-body-text { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 8px; }
+  .nt-actions { display: flex; gap: 6px; }
+  .nt-btn { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; transition: all 0.15s; }
+  .nt-btn:hover { background: var(--surface2); } .nt-btn.p { background: var(--accent); border-color: var(--accent); color: #fff; } .nt-btn.p:hover { background: var(--accent2); }
+  .nt-btn.g { background: var(--green); border-color: var(--green); color: #fff; } .nt-btn.g:hover { background: var(--green2); }
+  .pref-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .pref-row:last-child { border-bottom: none; }
+  .pref-label { font-size: 12px; color: var(--text2); }
+  .pref-sub { font-size: 10px; color: var(--text3); margin-top: 1px; }
+  .nt-group-label { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text3); padding: 10px 0 6px; }
+
+  /* ── FORM ELEMENTS ── */
+  .form-row { margin-bottom: 13px; }
+  .form-label { display: block; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); margin-bottom: 5px; }
+  .form-input, .form-select, .form-textarea { width: 100%; border: 1px solid var(--border2); border-radius: 6px; padding: 8px 10px; font-size: 13px; background: var(--surface2); color: var(--text); font-family: 'Barlow', sans-serif; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent); }
+  .form-textarea { resize: none; min-height: 65px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .submit-btn { width: 100%; background: var(--accent); color: #fff; border: none; border-radius: 6px; padding: 11px; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; margin-top: 4px; }
+  .submit-btn:hover { background: var(--accent2); }
+
+  /* ── MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: var(--surface); border-radius: 12px; border: 1px solid var(--border2); width: 100%; max-width: 480px; padding: 24px; }
+  .modal-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; }
+  .modal-close { cursor: pointer; color: var(--text3); font-size: 20px; border: none; background: none; line-height: 1; }
+  .type-toggle { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border2); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .type-opt { padding: 9px; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; background: transparent; border: none; color: var(--text2); transition: all 0.15s; }
+  .type-opt.sell-a { background: var(--accent); color: #fff; }
+  .type-opt.buy-a  { background: var(--green); color: #fff; }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--green); color: #fff; padding: 11px 22px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.05em; z-index: 300; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div><span class="logo-mark">ST</span><span class="logo-text">SteelXchange</span></div>
+    <div class="logo-sub">Steel Bar Marketplace</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Trading</div>
+    <button class="nav-item active" onclick="nav('marketplace',this)">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+      Marketplace
+    </button>
+    <button class="nav-item" onclick="nav('rfq',this)">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h7M4 7.5h7M4 10h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      RFQ
+      <span class="nav-badge">3</span>
+    </button>
+    <button class="nav-item" onclick="nav('messages',this)">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M1.5 2.5h12v8H8.5l-3 2.5v-2.5H1.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      Messages
+      <span class="nav-badge">4</span>
+    </button>
+    <div class="nav-section-label">Analytics</div>
+    <button class="nav-item" onclick="nav('prices',this)">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><polyline points="1,12 4,8 8,10 14,3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Price Tracker
+    </button>
+    <div class="nav-section-label">Account</div>
+    <button class="nav-item" onclick="nav('profile',this)">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 13c0-3 2.5-4.5 5.5-4.5S13 10 13 13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      My Profile
+    </button>
+    <button class="nav-item" onclick="nav('vault',this)">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="3" width="13" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="7.5" cy="8" r="1.8" stroke="currentColor" stroke-width="1.2"/><path d="M5 1.5h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Document Vault
+    </button>
+    <button class="nav-item" onclick="nav('notifications',this)">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5A3.5 3.5 0 0 1 11 5c0 2.5-1 4-2.5 5.5H6.5C5 9 4 7.5 4 5A3.5 3.5 0 0 1 7.5 1.5z" stroke="currentColor" stroke-width="1.3"/><path d="M6 11h3M7.5 13v0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Notifications
+      <span class="nav-badge">7</span>
+    </button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar">RM</div>
+    <div>
+      <div class="user-name">Raza Mirza</div>
+      <div class="user-role">Mirza Steel Trading LLC</div>
+      <div class="verified-pill"><span class="v-dot"></span>Verified</div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar" id="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Marketplace</div>
+      <div class="topbar-sub" id="topbar-sub">Browse steel listings from verified traders</div>
+    </div>
+    <div class="topbar-actions" id="topbar-actions">
+      <button class="tb-btn primary" onclick="openModal()">+ Post Listing</button>
+    </div>
+  </div>
+
+  <!-- ── PAGE: MARKETPLACE ── -->
+  <div class="page active" id="page-marketplace">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Active Listings</div><div class="stat-val o" id="mkt-stat">6</div></div>
+      <div class="stat-card"><div class="stat-label">Verified Traders</div><div class="stat-val">142</div></div>
+      <div class="stat-card"><div class="stat-label">Avg. Price / MT</div><div class="stat-val">$680</div></div>
+      <div class="stat-card"><div class="stat-label">Tonnes Available</div><div class="stat-val">4,820</div></div>
+    </div>
+    <div class="filter-bar">
+      <input class="search-input" placeholder="Search grade, location, supplier..." id="mkt-search" oninput="renderListings()">
+      <button class="pill active" onclick="setMktFilter('all',this)">All</button>
+      <button class="pill" onclick="setMktFilter('sell',this)">Sellers</button>
+      <button class="pill" onclick="setMktFilter('buy',this)">Buyers</button>
+      <button class="pill" onclick="setMktFilter('urgent',this)">Urgent</button>
+    </div>
+    <div class="listings-grid" id="listings-grid"></div>
+  </div>
+
+  <!-- ── PAGE: PROFILE ── -->
+  <div class="page" id="page-profile">
+    <div class="profile-grid">
+      <div class="profile-sidebar">
+        <div class="card card-pad">
+          <div class="avatar-big">RM</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;">Raza Mirza</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px;">Mirza Steel Trading LLC · Dubai, UAE</div>
+          <div class="badge b-verified" style="margin-top:8px;">● Verified Trader</div>
+          <button class="tb-btn" style="width:100%;margin-top:10px;">Edit Profile</button>
+        </div>
+        <div class="card card-pad">
+          <div class="section-label">Account Info</div>
+          <div class="meta-row"><span class="meta-key">Member since</span><span>Jan 2023</span></div>
+          <div class="meta-row"><span class="meta-key">Role</span><span>Buyer & Seller</span></div>
+          <div class="meta-row"><span class="meta-key">Location</span><span>Dubai, UAE</span></div>
+          <div class="meta-row"><span class="meta-key">Delivery</span><span>CIF / DAP</span></div>
+          <div class="meta-row"><span class="meta-key">Payment</span><span>L/C, TT 30</span></div>
+        </div>
+        <div class="card card-pad">
+          <div class="section-label">Trade Stats</div>
+          <div class="mini-grid">
+            <div class="mini-stat"><div class="mini-label">Deals Closed</div><div class="mini-val" style="color:var(--accent);">34</div></div>
+            <div class="mini-stat"><div class="mini-label">Listings</div><div class="mini-val">18</div></div>
+            <div class="mini-stat"><div class="mini-label">MT Traded</div><div class="mini-val">4,120</div></div>
+            <div class="mini-stat"><div class="mini-label">Response</div><div class="mini-val" style="color:var(--accent);">97%</div></div>
+          </div>
+        </div>
+        <div class="card card-pad">
+          <div class="section-label">Rating</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;">4.8 <span style="font-size:13px;color:var(--text3);font-family:'Barlow',sans-serif;font-weight:400;">/ 5 · 28 reviews</span></div>
+          <div style="color:var(--accent);font-size:16px;margin-top:4px;">★★★★★</div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="overflow:hidden;">
+          <div class="tab-row" style="padding:0 16px;">
+            <button class="tab-btn active" onclick="showProfileTab('listings',this)">My Listings</button>
+            <button class="tab-btn" onclick="showProfileTab('trades',this)">Trade History</button>
+            <button class="tab-btn" onclick="showProfileTab('reviews',this)">Reviews</button>
+          </div>
+          <div class="card-pad" id="profile-tab-body"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: MESSAGES ── -->
+  <div class="page" id="page-messages" style="padding:0;">
+    <div class="msg-layout">
+      <div class="msg-sidebar">
+        <div class="msg-sidebar-head">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;margin-bottom:8px;">Inbox <span style="background:var(--accent);color:#fff;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;">3</span></div>
+          <input class="search-input" style="min-width:unset;width:100%;font-size:12px;" placeholder="Search conversations..." id="thread-search" oninput="renderThreads()">
+        </div>
+        <div class="thread-list" id="thread-list"></div>
+      </div>
+      <div class="msg-main" id="chat-main"></div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: RFQ ── -->
+  <div class="page" id="page-rfq">
+    <div class="rfq-layout">
+      <div>
+        <div class="card card-pad" style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;">RFQ #2024-041 — TMT Fe500D Rebar 16mm</div>
+            <span class="badge b-buy">Quotes Received</span>
+          </div>
+          <div class="rfq-steps">
+            <div class="step-col"><div class="step-circle done">✓</div><div class="step-label done">Draft</div></div>
+            <div class="step-line done"></div>
+            <div class="step-col"><div class="step-circle done">✓</div><div class="step-label done">Sent</div></div>
+            <div class="step-line done"></div>
+            <div class="step-col"><div class="step-circle act">3</div><div class="step-label act">Quotes In</div></div>
+            <div class="step-line"></div>
+            <div class="step-col"><div class="step-circle">4</div><div class="step-label">Negotiate</div></div>
+            <div class="step-line"></div>
+            <div class="step-col"><div class="step-circle">5</div><div class="step-label">Accept & PO</div></div>
+          </div>
+          <div class="tab-row">
+            <button class="tab-btn active" onclick="showRfqTab('quotes',this)">Quotes (3)</button>
+            <button class="tab-btn" onclick="showRfqTab('detail',this)">RFQ Details</button>
+            <button class="tab-btn" onclick="showRfqTab('new',this)">+ New RFQ</button>
+          </div>
+          <div id="rfq-tab-body"></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="card card-pad">
+          <div class="section-label">RFQ Summary</div>
+          <div class="sum-row"><span style="color:var(--text3);">RFQ Number</span><span style="font-weight:500;">#2024-041</span></div>
+          <div class="sum-row"><span style="color:var(--text3);">Product</span><span style="font-weight:500;">TMT Fe500D 16mm</span></div>
+          <div class="sum-row"><span style="color:var(--text3);">Quantity</span><span style="font-weight:500;">150 MT</span></div>
+          <div class="sum-row"><span style="color:var(--text3);">Delivery</span><span style="font-weight:500;">CIF Dubai</span></div>
+          <div class="sum-row"><span style="color:var(--text3);">Target Price</span><span style="font-weight:500;">≤ $680/MT</span></div>
+          <div class="sum-row"><span style="color:var(--text3);">Deadline</span><span style="font-weight:500;">Apr 15, 2026</span></div>
+          <div class="sum-row"><span style="color:var(--text3);">Responses</span><span style="font-weight:700;color:var(--green);">3 of 5</span></div>
+        </div>
+        <div class="card card-pad">
+          <div class="section-label">Quote Status</div>
+          <div id="rfq-tl"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: PRICE TRACKER ── -->
+  <div class="page" id="page-prices">
+    <div class="ticker-strip" id="ticker-strip"></div>
+    <div class="pt-layout">
+      <div>
+        <div class="card card-pad" style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;" id="pt-title">Rebar Fe500D — CIF Dubai</div>
+              <div style="font-size:11px;color:var(--text3);">Price per metric tonne · USD</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;" id="pt-price">$675</div>
+              <div style="font-size:12px;" id="pt-chg" class="up">▲ $8 (+1.2%) this week</div>
+            </div>
+          </div>
+          <div class="range-pills">
+            <button class="range-btn" onclick="setRange('1W',this)">1W</button>
+            <button class="range-btn active" onclick="setRange('1M',this)">1M</button>
+            <button class="range-btn" onclick="setRange('3M',this)">3M</button>
+            <button class="range-btn" onclick="setRange('6M',this)">6M</button>
+            <button class="range-btn" onclick="setRange('1Y',this)">1Y</button>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="pt-canvas"></canvas>
+            <div class="pt-tooltip" id="pt-tooltip"><div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;" id="tt-price"></div><div style="font-size:11px;color:var(--text3);" id="tt-date"></div></div>
+          </div>
+          <div style="margin-top:10px;">
+            <div class="section-label">Set Price Alert</div>
+            <div class="alert-row">
+              <select class="alert-select"><option>Notify when price drops below</option><option>Notify when price rises above</option></select>
+              <input class="alert-input" type="number" placeholder="$650" id="alert-val">
+              <button class="tb-btn primary" onclick="addAlert()">Set</button>
+            </div>
+            <div id="alert-tags"></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="card card-pad">
+          <div class="section-label">Market Stats</div>
+          <div class="mini-grid" style="margin-bottom:12px;">
+            <div class="mini-stat"><div class="mini-label">52W High</div><div class="mini-val">$742</div></div>
+            <div class="mini-stat"><div class="mini-label">52W Low</div><div class="mini-val">$598</div></div>
+            <div class="mini-stat"><div class="mini-label">30D Avg</div><div class="mini-val">$661</div></div>
+            <div class="mini-stat"><div class="mini-label">YTD</div><div class="mini-val up">+4.2%</div></div>
+          </div>
+          <div class="section-label">Regional Prices</div>
+          <div class="region-row"><span style="color:var(--text2);">Mumbai FOB</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;">$648</span><span class="up" style="font-size:11px;">▲ 1.1%</span></div>
+          <div class="region-row"><span style="color:var(--text2);">Dubai CIF</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;">$675</span><span class="up" style="font-size:11px;">▲ 1.2%</span></div>
+          <div class="region-row"><span style="color:var(--text2);">Riyadh DAP</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;">$691</span><span class="flat-c" style="font-size:11px;">— 0.0%</span></div>
+          <div class="region-row"><span style="color:var(--text2);">Shanghai FOB</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;">$618</span><span class="dn" style="font-size:11px;">▼ 0.8%</span></div>
+          <div class="region-row"><span style="color:var(--text2);">Rotterdam CIF</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;">$702</span><span class="up" style="font-size:11px;">▲ 2.1%</span></div>
+        </div>
+        <div class="card card-pad">
+          <div class="section-label">Market Intelligence</div>
+          <div class="news-item"><div class="news-title"><span class="nb nb-bear">Bearish</span>China cuts steel export tariffs, flooding global market</div><div class="news-meta">Reuters · 2 hours ago</div></div>
+          <div class="news-item"><div class="news-title"><span class="nb nb-bull">Bullish</span>GCC infrastructure spend to hit $180B — rebar demand surge</div><div class="news-meta">MEED · 6 hours ago</div></div>
+          <div class="news-item"><div class="news-title"><span class="nb nb-neu">Neutral</span>Coking coal stable at $242/MT — input cost pressure eases</div><div class="news-meta">Platts · Yesterday</div></div>
+          <div class="news-item"><div class="news-title"><span class="nb nb-bull">Bullish</span>India launches anti-dumping probe on Chinese rebar imports</div><div class="news-meta">Business Standard · Yesterday</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: DOCUMENT VAULT ── -->
+  <div class="page" id="page-vault">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Total Docs</div><div class="stat-val o">24</div></div>
+      <div class="stat-card"><div class="stat-label">Verified</div><div class="stat-val g">19</div></div>
+      <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-val">3</div></div>
+      <div class="stat-card"><div class="stat-label">Expiring Soon</div><div class="stat-val" style="color:#BA7517;">2</div></div>
+    </div>
+    <div class="dv-layout">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="card" style="padding:0;">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);"><div class="section-label" style="margin-bottom:0;">Company & Compliance Certificates</div></div>
+          <div style="padding:4px 16px 10px;" id="dv-cert"></div>
+        </div>
+        <div class="card" style="padding:0;">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);"><div class="section-label" style="margin-bottom:0;">Trade Documents</div></div>
+          <div style="padding:4px 16px 10px;" id="dv-trade"></div>
+        </div>
+        <div class="card" style="padding:0;">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);"><div class="section-label" style="margin-bottom:0;">Mill Test Reports</div></div>
+          <div style="padding:4px 16px 10px;" id="dv-mill"></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div id="dv-preview"></div>
+        <div class="card card-pad">
+          <div class="section-label">Expiry Watch</div>
+          <div class="exp-row"><span style="color:var(--text2);font-size:12px;">ISO 9001:2015 Certificate</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#E24B4A;">12 days</span></div>
+          <div class="exp-row"><span style="color:var(--text2);font-size:12px;">Trade License — Dubai Economy</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#BA7517;">41 days</span></div>
+          <div class="exp-row"><span style="color:var(--text2);font-size:12px;">BIS Certification Fe500D</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--green);">245 days</span></div>
+        </div>
+        <div class="card card-pad">
+          <div class="section-label">Shared With</div>
+          <div class="share-row"><span style="font-size:12px;color:var(--text2);">Tata Steel Ltd.</span><button class="toggle on" onclick="toggleEl(this)"><div class="toggle-knob"></div></button></div>
+          <div class="share-row"><span style="font-size:12px;color:var(--text2);">Gulf Construction LLC</span><button class="toggle on" onclick="toggleEl(this)"><div class="toggle-knob"></div></button></div>
+          <div class="share-row"><span style="font-size:12px;color:var(--text2);">Baosteel Export</span><button class="toggle off" onclick="toggleEl(this)"><div class="toggle-knob"></div></button></div>
+          <div class="share-row"><span style="font-size:12px;color:var(--text2);">Al-Rajhi Construction</span><button class="toggle off" onclick="toggleEl(this)"><div class="toggle-knob"></div></button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: NOTIFICATIONS ── -->
+  <div class="page" id="page-notifications">
+    <div class="nt-layout">
+      <div>
+        <div class="filter-bar" style="margin-bottom:14px;">
+          <button class="pill active" onclick="setNtFilter('all',this)">All</button>
+          <button class="pill" onclick="setNtFilter('unread',this)">Unread (7)</button>
+          <button class="pill" onclick="setNtFilter('price',this)">Price</button>
+          <button class="pill" onclick="setNtFilter('rfq',this)">RFQ</button>
+          <button class="pill" onclick="setNtFilter('deal',this)">Deals</button>
+          <button class="pill" onclick="setNtFilter('doc',this)">Docs</button>
+          <button class="tb-btn" style="margin-left:auto;" onclick="markAllRead()">Mark all read</button>
+        </div>
+        <div id="nt-feed"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="card card-pad">
+          <div class="section-label">Summary</div>
+          <div class="sum-row"><span style="color:var(--text3);">Unread</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--accent);">7</span></div>
+          <div class="sum-row"><span style="color:var(--text3);">Price alerts</span><span style="font-weight:500;">2</span></div>
+          <div class="sum-row"><span style="color:var(--text3);">RFQ responses</span><span style="font-weight:500;">3</span></div>
+          <div class="sum-row"><span style="color:var(--text3);">New messages</span><span style="font-weight:500;">4</span></div>
+          <div class="sum-row"><span style="color:var(--text3);">Deal updates</span><span style="font-weight:500;">2</span></div>
+        </div>
+        <div class="card card-pad">
+          <div class="section-label">Preferences</div>
+          <div class="pref-row"><div><div class="pref-label">Price alerts</div><div class="pref-sub">When your target is hit</div></div><button class="toggle on" onclick="toggleEl(this)"><div class="toggle-knob"></div></button></div>
+          <div class="pref-row"><div><div class="pref-label">RFQ responses</div><div class="pref-sub">Quotes from sellers</div></div><button class="toggle on" onclick="toggleEl(this)"><div class="toggle-knob"></div></button></div>
+          <div class="pref-row"><div><div class="pref-label">New messages</div><div class="pref-sub">In-app chat activity</div></div><button class="toggle on" onclick="toggleEl(this)"><div class="toggle-knob"></div></button></div>
+          <div class="pref-row"><div><div class="pref-label">Matching listings</div><div class="pref-sub">Grade you're buying</div></div><button class="toggle on" onclick="toggleEl(this)"><div class="toggle-knob"></div></button></div>
+          <div class="pref-row"><div><div class="pref-label">Doc expiry</div><div class="pref-sub">30 days before expiry</div></div><button class="toggle on" onclick="toggleEl(this)"><div class="toggle-knob"></div></button></div>
+          <div class="pref-row"><div><div class="pref-label">Market news digest</div><div class="pref-sub">Daily 8am briefing</div></div><button class="toggle off" onclick="toggleEl(this)"><div class="toggle-knob"></div></button></div>
+        </div>
+        <div class="card card-pad">
+          <div class="section-label">Delivery Channels</div>
+          <div style="font-size:12px;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2);">📱 Push notifications</span><span style="color:var(--green);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;">Active</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2);">✉️ Email</span><span style="color:var(--green);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;">Active</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2);">💬 WhatsApp</span><span style="color:var(--green);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;">Active</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2);">🤖 Telegram bot</span><span style="color:var(--text3);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;">Connect</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- POST LISTING MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title">Post a Listing <button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="type-toggle">
+      <button class="type-opt sell-a" id="type-sell" onclick="setListingType('sell')">Selling</button>
+      <button class="type-opt" id="type-buy" onclick="setListingType('buy')">Buying</button>
+    </div>
+    <div class="form-row"><label class="form-label">Steel Grade / Product</label><input class="form-input" id="f-grade" placeholder="e.g. TMT Fe500D, HRB400, Rebar 16mm..."></div>
+    <div class="grid2">
+      <div class="form-row"><label class="form-label">Quantity (MT)</label><input class="form-input" id="f-qty" type="number" placeholder="e.g. 50"></div>
+      <div class="form-row"><label class="form-label">Price per MT (USD)</label><input class="form-input" id="f-price" type="number" placeholder="e.g. 690"></div>
+    </div>
+    <div class="grid2">
+      <div class="form-row"><label class="form-label">Location / Port</label><input class="form-input" id="f-loc" placeholder="e.g. Dubai, UAE"></div>
+      <div class="form-row"><label class="form-label">Delivery Terms</label><select class="form-select" id="f-del"><option>Ex-Works</option><option>FOB</option><option>CIF</option><option>DAP</option></select></div>
+    </div>
+    <div class="grid2">
+      <div class="form-row"><label class="form-label">Contact Name</label><input class="form-input" id="f-name" placeholder="Your name"></div>
+      <div class="form-row"><label class="form-label">Mark as Urgent?</label><select class="form-select" id="f-urgent"><option value="no">No</option><option value="yes">Yes</option></select></div>
+    </div>
+    <div class="form-row"><label class="form-label">Additional Notes</label><textarea class="form-textarea" id="f-notes" placeholder="Mill certificates, specs, payment terms..."></textarea></div>
+    <button class="submit-btn" onclick="submitListing()">Publish Listing →</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Listing published successfully!</div>
+
+<script>
+// ── DATA ──
+const ICONS = ['🔩','🏗️','⚙️','🔧','🏭','📦','🏗️','🔩'];
+let listings = [
+  {id:1,type:'sell',grade:'TMT Fe500D Rebar 16mm',qty:200,price:675,loc:'Mumbai, India',delivery:'FOB',seller:'Tata Steel Ltd.',urgent:false},
+  {id:2,type:'buy',grade:'HRB400 Rebar 12mm',qty:500,price:620,loc:'Dubai, UAE',delivery:'CIF',seller:'Gulf Steel Trading',urgent:true},
+  {id:3,type:'sell',grade:'Structural Angles 50×50×5',qty:80,price:710,loc:'Shanghai, China',delivery:'FOB',seller:'Baosteel Export',urgent:false},
+  {id:4,type:'buy',grade:'Fe550 TMT Bars 25mm',qty:300,price:695,loc:'Riyadh, KSA',delivery:'DAP',seller:'Al-Rajhi Construction',urgent:false},
+  {id:5,type:'sell',grade:'Hot Rolled Coils 3mm',qty:150,price:730,loc:'Rotterdam, NL',delivery:'Ex-Works',seller:'Tata Steel Europe',urgent:true},
+  {id:6,type:'sell',grade:'Mild Steel Flat Bars 100×10',qty:60,price:655,loc:'Karachi, Pakistan',delivery:'FOB',seller:'Ittefaq Steel',urgent:false},
+];
+let mktFilter='all', listingType='sell', nextId=7, ptSelectedId='rebar', ptRange='1M', ptAlerts=[];
+
+// ── NAV ──
+const topbarMeta = {
+  marketplace:  {title:'Marketplace',    sub:'Browse steel listings from verified traders',         action:'<button class="tb-btn primary" onclick="openModal()">+ Post Listing</button>'},
+  profile:      {title:'My Profile',     sub:'Raza Mirza · Mirza Steel Trading LLC',                action:'<button class="tb-btn">Edit Profile</button>'},
+  messages:     {title:'Messages',       sub:'4 unread conversations',                              action:''},
+  rfq:          {title:'RFQ',            sub:'Manage quote requests and supplier responses',        action:'<button class="tb-btn primary" onclick="showRfqTab(\'new\', document.querySelectorAll(\'.tab-btn\')[2])">+ New RFQ</button>'},
+  prices:       {title:'Price Tracker',  sub:'Live steel index prices · Updated Apr 11, 2026',     action:'<span style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:6px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;"></span>Live</span>'},
+  vault:        {title:'Document Vault', sub:'24 documents · 19 verified',                         action:'<button class="tb-btn primary">+ Upload Document</button>'},
+  notifications:{title:'Notifications',  sub:'7 unread alerts',                                    action:'<button class="tb-btn" onclick="markAllRead()">Mark all read</button>'},
+};
+
+function nav(page, btn) {
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const m = topbarMeta[page];
+  document.getElementById('topbar-title').textContent = m.title;
+  document.getElementById('topbar-sub').textContent = m.sub;
+  document.getElementById('topbar-actions').innerHTML = m.action;
+  if (page==='marketplace') renderListings();
+  if (page==='messages') { renderThreads(); renderChat(threads[0]); }
+  if (page==='prices') { renderTickers(); drawChart(); }
+  if (page==='profile') renderProfileTab('listings', document.querySelector('#page-profile .tab-btn'));
+  if (page==='rfq') { renderRfqTimeline(); showRfqTab('quotes', document.querySelector('#page-rfq .tab-btn')); }
+  if (page==='vault') renderVault();
+  if (page==='notifications') renderNotifications();
+}
+
+// ── MARKETPLACE ──
+function renderListings() {
+  const q = (document.getElementById('mkt-search')||{value:''}).value.toLowerCase();
+  let f = listings.filter(l => {
+    const mf = mktFilter==='all' || l.type===mktFilter || (mktFilter==='urgent'&&l.urgent);
+    const ms = !q || l.grade.toLowerCase().includes(q) || l.loc.toLowerCase().includes(q) || l.seller.toLowerCase().includes(q);
+    return mf && ms;
+  });
+  document.getElementById('mkt-stat').textContent = listings.length;
+  const grid = document.getElementById('listings-grid');
+  if (!f.length) { grid.innerHTML='<div style="color:var(--text3);padding:30px;grid-column:1/-1;text-align:center;">No listings match.</div>'; return; }
+  grid.innerHTML = f.map((l,i) => {
+    const bc = l.urgent?'b-urgent':l.type==='sell'?'b-sell':'b-buy';
+    const bt = l.urgent?'URGENT':l.type==='sell'?'SELLING':'BUYING';
+    return `<div class="listing-card">
+      <div class="lc-img"><span class="lc-badge badge ${bc}">${bt}</span>${ICONS[i%ICONS.length]}</div>
+      <div class="lc-body">
+        <div class="lc-title">${l.grade}</div>
+        <div class="lc-meta">${l.qty} MT &nbsp;·&nbsp; ${l.delivery}<br>📍 ${l.loc}</div>
+        <div class="lc-footer">
+          <div><div class="lc-price">$${l.price.toLocaleString()}</div><div class="lc-unit">per metric tonne</div></div>
+          <div class="lc-seller">${l.seller.split(' ').slice(0,2).join(' ')}</div>
+        </div>
+        <button class="contact-btn">Contact ${l.type==='sell'?'Seller':'Buyer'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function setMktFilter(f,btn) { mktFilter=f; document.querySelectorAll('#page-marketplace .pill').forEach(p=>p.classList.remove('active')); btn.classList.add('active'); renderListings(); }
+
+// ── MODAL ──
+function openModal() { document.getElementById('modal').classList.add('show'); }
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+function setListingType(t) {
+  listingType=t;
+  document.getElementById('type-sell').className='type-opt'+(t==='sell'?' sell-a':'');
+  document.getElementById('type-buy').className='type-opt'+(t==='buy'?' buy-a':'');
+}
+function submitListing() {
+  const grade = document.getElementById('f-grade').value.trim();
+  if (!grade) { document.getElementById('f-grade').focus(); return; }
+  listings.unshift({id:nextId++,type:listingType,grade,qty:parseInt(document.getElementById('f-qty').value)||100,price:parseInt(document.getElementById('f-price').value)||700,loc:document.getElementById('f-loc').value||'Location TBD',delivery:document.getElementById('f-del').value,seller:document.getElementById('f-name').value||'Anonymous Trader',urgent:document.getElementById('f-urgent').value==='yes'});
+  closeModal(); showToast('Listing published successfully!'); renderListings();
+}
+function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+
+// ── PROFILE ──
+const profileTabs = {
+  listings: () => ['TMT Fe500D Rebar 16mm·200 MT · FOB Mumbai·$675/MT·active·sell','HRB400 Rebar 12mm·500 MT · CIF Dubai·$620/MT·pending·buy','Structural Angles 50×50×5·80 MT · Ex-Works·$695/MT·active·sell','Fe550 TMT Bars 25mm·150 MT · DAP Riyadh·$710/MT·closed·sell'].map(r=>{const[g,s,p,st,tp]=r.split('·');const sc=st==='active'?'b-buy':st==='closed'?'':'b-pending';return`<div class="doc-row"><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;"><span class="badge ${tp==='sell'?'b-sell':'b-buy'}">${tp.toUpperCase()}</span> ${g}</div><div style="font-size:11px;color:var(--text3);margin-top:3px;">${s}</div></div><div style="display:flex;align-items:center;gap:10px;"><span style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--accent);">${p}</span><span class="badge ${sc}">${st}</span></div></div>`;}).join(''),
+  trades: () => [['TMT Fe500 Rebar 12mm','500 MT · Sold to Gulf Const.','$312,500','Mar 2025'],['HRB400 16mm Rebar','300 MT · Bought from Baosteel','$198,000','Jan 2025'],['Flat Bars 100×10 MS','80 MT · Sold to Al-Fardan','$52,400','Nov 2024'],['Hot Rolled Coils 3mm','200 MT · Bought from NLMK','$148,000','Sep 2024']].map(([p,m,a,d])=>`<div class="doc-row"><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;">${p}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">${m}</div></div><div style="text-align:right;"><div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;">${a}</div><div style="font-size:11px;color:var(--text3);">${d}</div></div></div>`).join(''),
+  reviews: () => [['Gulf Construction LLC',5,'Raza delivered exactly what was listed — right grade, right weight, on time. Will buy again.','Feb 2025'],['Baosteel Export Dept.',5,'Serious buyer. Payment was on time via L/C, no issues with documents.','Dec 2024'],['Al-Fardan Trading',4,'Good quality bars, slight delay in shipping docs but resolved professionally.','Oct 2024']].map(([n,s,t,d])=>`<div style="padding:11px 0;border-bottom:1px solid var(--border);"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:13px;font-weight:500;">${n}</span><span style="color:var(--accent);">${'★'.repeat(s)}${'☆'.repeat(5-s)}</span></div><div style="font-size:12px;color:var(--text2);line-height:1.5;">${t}</div><div style="font-size:11px;color:var(--text3);margin-top:3px;">${d}</div></div>`).join(''),
+};
+function showProfileTab(name, btn) {
+  document.querySelectorAll('#page-profile .tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('profile-tab-body').innerHTML = profileTabs[name]();
+}
+function renderProfileTab(name, btn) { showProfileTab(name, btn); }
+
+// ── MESSAGES ──
+const threads = [
+  {id:1,name:'Tata Steel Ltd.',initials:'TS',bg:'#FAECE7',fg:'#993C1D',subject:'TMT Fe500D Rebar 16mm · 200 MT',preview:'We can hold for 5 business days...',time:'10:42 AM',unread:true,listing:{grade:'TMT Fe500D Rebar 16mm',qty:'200 MT',price:'$675',delivery:'FOB Mumbai'},messages:[{from:'them',name:'Tata Steel Ltd.',text:'Hello, thank you for your inquiry. We have 200 MT available for immediate dispatch from Mumbai port.',time:'9:15 AM'},{from:'me',name:'Raza Mirza',text:'Thanks for the quick reply. We are interested in 150 MT. Can you confirm the FOB price holds?',time:'9:28 AM'},{from:'them',name:'Tata Steel Ltd.',text:'Yes, $675/MT FOB Mumbai confirmed for 150 MT. Payment via L/C at sight.',time:'9:41 AM'},{from:'rfq',name:'Tata Steel Ltd.',time:'9:43 AM'},{from:'me',name:'Raza Mirza',text:'The documents look good. We will have our bank issue the L/C by Thursday.',time:'10:12 AM'},{from:'them',name:'Tata Steel Ltd.',text:'We can hold for 5 business days pending L/C confirmation.',time:'10:42 AM'}]},
+  {id:2,name:'Baosteel Export',initials:'BE',bg:'#E6F1FB',fg:'#185FA5',subject:'HRB400 Rebar 12mm · 500 MT',preview:'CIF Dubai would be $645/MT...',time:'Yesterday',unread:true,listing:{grade:'HRB400 Rebar 12mm',qty:'500 MT',price:'$618',delivery:'FOB Shanghai'},messages:[{from:'them',name:'Baosteel Export',text:'Good day. We can offer $618/MT FOB Shanghai for 500 MT with Q235B mill certificate.',time:'2:10 PM'},{from:'me',name:'Raza Mirza',text:'Can you do CIF Dubai instead? What would freight add?',time:'3:45 PM'},{from:'them',name:'Baosteel Export',text:'CIF Dubai would be $645/MT. Transit time 18–22 days from loading.',time:'4:30 PM'}]},
+  {id:3,name:'Gulf Construction',initials:'GC',bg:'#E1F5EE',fg:'#0F6E56',subject:'Structural Angles 50×50×5 · 80 MT',preview:'We need angles by end of April...',time:'Mon',unread:true,listing:{grade:'Structural Angles 50×50×5',qty:'80 MT',price:'$710',delivery:'DAP Dubai'},messages:[{from:'them',name:'Gulf Construction',text:'Hi, we need 80 MT of structural angles at your Dubai site by end of April. Is DAP delivery possible?',time:'11:00 AM'},{from:'me',name:'Raza Mirza',text:'Yes, $710/MT DAP Dubai for 80 MT. Can you share your delivery address?',time:'11:45 AM'},{from:'them',name:'Gulf Construction',text:'We need the angles by end of April. Please confirm and send a proforma invoice.',time:'2:15 PM'}]},
+  {id:4,name:'Al-Rajhi Construction',initials:'AR',bg:'#FAEEDA',fg:'#854F0B',subject:'Fe550 TMT Bars · Long-term Supply',preview:'We will revert with our Q2 forecast...',time:'Mar 28',unread:false,listing:{grade:'Fe550 TMT Bars 25mm',qty:'300 MT',price:'$695',delivery:'DAP Riyadh'},messages:[{from:'them',name:'Al-Rajhi Construction',text:'We need approximately 300 MT per quarter of Fe550 TMT 25mm.',time:'10:00 AM'},{from:'me',name:'Raza Mirza',text:'We can accommodate that. Our quarterly contract price is $690/MT DAP Riyadh.',time:'11:30 AM'},{from:'them',name:'Al-Rajhi Construction',text:'We will revert with our Q2 and Q3 forecast next week.',time:'1:00 PM'}]},
+];
+let activeThread = 1;
+function renderThreads() {
+  const q = (document.getElementById('thread-search')||{value:''}).value.toLowerCase();
+  document.getElementById('thread-list').innerHTML = threads.filter(t=>!q||t.name.toLowerCase().includes(q)||t.subject.toLowerCase().includes(q)).map(t=>`
+    <div class="thread${t.id===activeThread?' active':''}" onclick="selectThread(${t.id})">
+      <div class="t-avatar" style="background:${t.bg};color:${t.fg};">${t.initials}</div>
+      <div class="t-info">
+        <div class="t-top"><div class="t-name">${t.name}</div><div class="t-time">${t.time}</div></div>
+        <div class="t-subject">${t.subject}</div>
+        <div class="t-preview">${t.preview}</div>
+      </div>
+      ${t.unread?'<div class="unread-dot"></div>':''}
+    </div>`).join('');
+}
+function selectThread(id) { activeThread=id; const t=threads.find(x=>x.id===id); t.unread=false; renderThreads(); renderChat(t); }
+function renderChat(t) {
+  const main = document.getElementById('chat-main');
+  if (!main) return;
+  const msgs = t.messages.map(m => {
+    if (m.from==='rfq') return `<div class="bubble-wrap theirs"><div class="sender-name">${m.name}</div><div class="rfq-inline"><div class="rfq-inline-label">Quote Proposal</div><div class="rfq-row"><span style="color:var(--text3);">Product</span><span>${t.listing.grade}</span></div><div class="rfq-row"><span style="color:var(--text3);">Quantity</span><span>${t.listing.qty}</span></div><div class="rfq-row"><span style="color:var(--text3);">Price</span><span style="font-weight:700;color:var(--accent);">${t.listing.price}/MT</span></div><div class="rfq-row"><span style="color:var(--text3);">Delivery</span><span>${t.listing.delivery}</span></div><div class="rfq-row"><span style="color:var(--text3);">Payment</span><span>L/C at sight</span></div><div class="rfq-inline-btns"><button class="rfq-btn acc" onclick="acceptInlineQuote()">Accept Quote</button><button class="rfq-btn">Counter Offer</button></div></div><div class="btime">${m.time}</div></div>`;
+    const mine = m.from==='me';
+    return `<div class="bubble-wrap ${mine?'mine':'theirs'}"><div class="sender-name">${m.name}</div><div class="bubble ${mine?'mine':'theirs'}">${m.text}</div><div class="btime">${m.time}</div></div>`;
+  }).join('');
+  main.innerHTML = `
+    <div class="chat-head">
+      <div class="t-avatar" style="background:${t.bg};color:${t.fg};width:36px;height:36px;border-radius:50%;flex-shrink:0;">${t.initials}</div>
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;">${t.name} <span class="badge b-verified" style="font-size:9px;">Verified</span></div><div style="font-size:11px;color:var(--text3);">Usually replies within 2 hrs · 4.9 ★ · 34 deals</div></div>
+      <div class="chat-actions">
+        <button class="tb-btn">Counter Offer</button>
+        <button class="tb-btn">Proforma Invoice</button>
+        <button class="tb-btn primary">Close Deal →</button>
+      </div>
+    </div>
+    <div class="listing-banner">
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:3px;">Listing in discussion</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;">${t.listing.grade}</div><div style="font-size:11px;color:var(--text2);">${t.listing.qty} · ${t.listing.delivery}</div></div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--accent);">${t.listing.price}<span style="font-size:12px;color:var(--text3);font-family:'Barlow',sans-serif;font-weight:400;">/MT</span></div>
+    </div>
+    <div class="messages-area" id="msgs-area">${msgs}</div>
+    <div class="quick-btns">
+      <button class="quick" onclick="insertQ('Can you share the mill certificate?')">Mill certificate?</button>
+      <button class="quick" onclick="insertQ('Can you hold the stock for 5 days?')">Hold stock?</button>
+      <button class="quick" onclick="insertQ('We are ready to issue the L/C.')">Ready to issue L/C</button>
+      <button class="quick" onclick="insertQ('Please send a proforma invoice.')">Request proforma</button>
+      <button class="quick" onclick="insertQ('What is the earliest loading date?')">Loading date?</button>
+    </div>
+    <div class="msg-input-row">
+      <textarea class="msg-textarea" id="msg-input" placeholder="Type a message..." rows="1" onkeydown="handleKey(event)"></textarea>
+      <button class="send-btn" onclick="sendMsg()">Send</button>
+    </div>`;
+  const area = document.getElementById('msgs-area');
+  if (area) area.scrollTop = area.scrollHeight;
+}
+function insertQ(text) { const i=document.getElementById('msg-input'); if(i){i.value=text;i.focus();} }
+function handleKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
+function sendMsg() {
+  const input=document.getElementById('msg-input'); if(!input||!input.value.trim())return;
+  const t=threads.find(x=>x.id===activeThread);
+  const now=new Date(); const time=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  t.messages.push({from:'me',name:'Raza Mirza',text:input.value.trim(),time});
+  t.preview=input.value.trim().slice(0,40); t.time='Just now'; input.value='';
+  renderChat(t); renderThreads();
+}
+function acceptInlineQuote() {
+  const t=threads.find(x=>x.id===activeThread);
+  const now=new Date(); const time=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  t.messages.push({from:'me',name:'Raza Mirza',text:'We accept the quote. Our bank will issue the L/C by Thursday.',time});
+  renderChat(t); renderThreads(); showToast('Quote accepted!');
+}
+
+// ── RFQ ──
+let rfqAccepted = null;
+const rfqQuotes = [
+  {id:1,supplier:'SAIL India',initials:'SI',bg:'#E6F1FB',fg:'#185FA5',price:668,qty:150,delivery:'CIF Dubai',payment:'L/C at sight',lead:'18 days',validity:'7 days',rating:'4.7',deals:89,badge:'b-best',blabel:'Best Price',note:'ISO certified. Full BIS compliance.'},
+  {id:2,supplier:'Jindal Steel',initials:'JS',bg:'#FAEEDA',fg:'#854F0B',price:672,qty:150,delivery:'CIF Dubai',payment:'TT 30% advance',lead:'14 days',validity:'5 days',rating:'4.8',deals:134,badge:'b-fast',blabel:'Fastest',note:'Fastest loading in Mumbai. Can split shipment.'},
+  {id:3,supplier:'Tata Steel Ltd.',initials:'TS',bg:'#FAECE7',fg:'#993C1D',price:675,qty:150,delivery:'CIF Dubai',payment:'L/C at sight',lead:'21 days',validity:'5 days',rating:'4.9',deals:210,badge:'b-rated',blabel:'Top Rated',note:'Premium grade. Mill certs pre-shared.'},
+];
+const rfqViews = {
+  quotes: () => rfqQuotes.map(q => {
+    const isAcc = rfqAccepted===q.id;
+    return `<div class="quote-card" style="${isAcc?'border-color:var(--green);':''}">
+      <div class="qc-head">
+        <div class="qc-supplier">
+          <div class="t-avatar" style="background:${q.bg};color:${q.fg};width:28px;height:28px;font-size:11px;">${q.initials}</div>
+          ${q.supplier} <span class="badge ${q.badge}">${q.blabel}</span>
+          ${isAcc?'<span class="badge b-verified">Accepted</span>':''}
+        </div>
+        <div style="font-size:11px;color:var(--text2);">★ ${q.rating} · ${q.deals} deals</div>
+      </div>
+      <div class="qc-body">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;">
+          <div class="qc-price">$${q.price}<span style="font-size:13px;color:var(--text3);font-family:'Barlow',sans-serif;font-weight:400;">/MT</span></div>
+          <div style="font-size:12px;color:var(--text2);">Total: <strong>$${(q.price*q.qty).toLocaleString()}</strong></div>
+        </div>
+        <div class="qc-row"><span style="color:var(--text3);">Quantity</span><span>${q.qty} MT</span></div>
+        <div class="qc-row"><span style="color:var(--text3);">Delivery</span><span>${q.delivery}</span></div>
+        <div class="qc-row"><span style="color:var(--text3);">Lead Time</span><span>${q.lead}</span></div>
+        <div class="qc-row"><span style="color:var(--text3);">Payment</span><span>${q.payment}</span></div>
+        <div style="font-size:11px;color:var(--text2);margin-top:8px;">${q.note}</div>
+      </div>
+      <div class="qc-actions">
+        ${isAcc
+          ? `<button class="qbtn acc">Generate PO →</button>`
+          : `<button class="qbtn acc" onclick="acceptRfqQuote(${q.id})">Accept</button>
+             <button class="qbtn">Counter</button>
+             <button class="qbtn">Message</button>`}
+      </div>
+    </div>`;
+  }).join(''),
+  detail: () => `
+    <div class="grid2"><div class="form-row"><label class="form-label">Product</label><div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;">TMT Fe500D Rebar 16mm</div></div><div class="form-row"><label class="form-label">Quantity</label><div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;">150 MT</div></div></div>
+    <div class="grid3"><div class="form-row"><label class="form-label">Delivery</label><div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;">CIF Dubai</div></div><div class="form-row"><label class="form-label">Target Price</label><div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;">≤ $680/MT</div></div><div class="form-row"><label class="form-label">Payment</label><div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;">L/C at sight</div></div></div>
+    <div class="form-row"><label class="form-label">Specs</label><div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;line-height:1.5;">BIS certified Fe500D grade required. Mill test certificate mandatory. Delivery by Apr 30, 2026.</div></div>`,
+  new: () => `
+    <div class="grid2"><div class="form-row"><label class="form-label">Product / Grade</label><input class="form-input" placeholder="e.g. TMT Fe500, HRB400 12mm..."></div><div class="form-row"><label class="form-label">Quantity (MT)</label><input class="form-input" type="number" placeholder="e.g. 200"></div></div>
+    <div class="grid3"><div class="form-row"><label class="form-label">Delivery Terms</label><select class="form-select"><option>CIF</option><option>FOB</option><option>DAP</option><option>Ex-Works</option></select></div><div class="form-row"><label class="form-label">Target Price/MT</label><input class="form-input" type="number" placeholder="e.g. 680"></div><div class="form-row"><label class="form-label">Payment Terms</label><select class="form-select"><option>L/C at sight</option><option>TT Advance</option><option>TT 30 days</option></select></div></div>
+    <div class="form-row"><label class="form-label">Delivery Location</label><input class="form-input" placeholder="e.g. Jebel Ali, Dubai"></div>
+    <div class="form-row"><label class="form-label">Specifications</label><textarea class="form-textarea" placeholder="BIS certified, mill certs, inspection, deadline..."></textarea></div>
+    <div class="form-row"><label class="form-label">Send RFQ to</label><select class="form-select"><option>All verified sellers (matching grade)</option><option>My saved suppliers only</option></select></div>
+    <button class="submit-btn" onclick="showToast('RFQ sent to suppliers!')">Send RFQ →</button>`,
+};
+function showRfqTab(name, btn) {
+  document.querySelectorAll('#page-rfq .tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('rfq-tab-body').innerHTML = rfqViews[name]();
+}
+function acceptRfqQuote(id) { rfqAccepted=id; showRfqTab('quotes',null); showToast('Quote accepted! Generating PO...'); }
+function renderRfqTimeline() {
+  document.getElementById('rfq-tl').innerHTML = [
+    {n:'Tata Steel Ltd.',sub:'Quoted $675/MT · Apr 9',s:'done'},
+    {n:'SAIL India',sub:'Quoted $668/MT · Apr 10',s:'done'},
+    {n:'Jindal Steel',sub:'Quoted $672/MT · Apr 10',s:'done'},
+    {n:'Baosteel Export',sub:'Awaiting response',s:'act'},
+    {n:'NLMK Trading',sub:'Awaiting response',s:'pend'},
+  ].map((item,i,arr) => `<div class="tl-item"><div class="tl-left"><div class="tl-dot ${item.s}"></div>${i<arr.length-1?'<div class="tl-line"></div>':''}</div><div class="tl-content"><div class="tl-label">${item.n}</div><div class="tl-sub" style="${item.s==='act'?'color:var(--accent);':''}">${item.sub}</div></div></div>`).join('');
+}
+
+// ── PRICE TRACKER ──
+const tickers = [
+  {id:'rebar',name:'Rebar Fe500D',price:675,chg:+8,pct:1.2,dir:'up',region:'CIF Dubai'},
+  {id:'hrc',name:'Hot Rolled Coil',price:730,chg:+14,pct:1.9,dir:'up',region:'FOB Rotterdam'},
+  {id:'hrb400',name:'HRB400 Rebar',price:618,chg:-5,pct:-0.8,dir:'dn',region:'FOB Shanghai'},
+  {id:'angles',name:'Struct. Angles',price:710,chg:0,pct:0,dir:'flat',region:'DAP Dubai'},
+  {id:'tmt550',name:'TMT Fe550',price:695,chg:+3,pct:0.4,dir:'up',region:'DAP Riyadh'},
+  {id:'ms',name:'MS Flat Bars',price:655,chg:-9,pct:-1.4,dir:'dn',region:'FOB Karachi'},
+];
+function renderTickers() {
+  document.getElementById('ticker-strip').innerHTML = tickers.map(t => {
+    const arr=t.dir==='up'?'▲':t.dir==='dn'?'▼':'—'; const cls=t.dir==='up'?'up':t.dir==='dn'?'dn':'flat-c';
+    return `<div class="ticker${t.id===ptSelectedId?' sel':''}" onclick="selectTicker('${t.id}')">
+      <div class="ticker-name">${t.name}</div>
+      <div class="ticker-price">$${t.price}</div>
+      <div class="ticker-chg ${cls}">${arr} $${Math.abs(t.chg)} (${t.pct>0?'+':''}${t.pct}%)</div>
+    </div>`;
+  }).join('');
+}
+function selectTicker(id) {
+  ptSelectedId=id; const t=tickers.find(x=>x.id===id);
+  const arr=t.dir==='up'?'▲':t.dir==='dn'?'▼':'—'; const cls=t.dir==='up'?'up':t.dir==='dn'?'dn':'flat-c';
+  document.getElementById('pt-title').textContent=`${t.name} — ${t.region}`;
+  document.getElementById('pt-price').textContent=`$${t.price}`;
+  const c=document.getElementById('pt-chg'); c.textContent=`${arr} $${Math.abs(t.chg)} (${t.pct>0?'+':''}${t.pct}%) this week`; c.className=cls;
+  renderTickers(); drawChart();
+}
+function setRange(r,btn) { ptRange=r; document.querySelectorAll('.range-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); drawChart(); }
+const rangePts={'1W':7,'1M':30,'3M':90,'6M':180,'1Y':365};
+function genPrices(base,n){const pts=[];let p=base-(Math.random()*30+15);for(let i=0;i<n;i++){p+=(Math.random()-0.46)*6;p=Math.max(base-70,Math.min(base+35,p));pts.push(Math.round(p));}pts[n-1]=base;return pts;}
+function genLabels(n){const l=[];const now=new Date(2026,3,11);for(let i=n-1;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);l.push(d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}));}return l;}
+function drawChart(){
+  const canvas=document.getElementById('pt-canvas'); if(!canvas)return;
+  const wrap=canvas.parentElement; const dpr=window.devicePixelRatio||1;
+  canvas.width=wrap.clientWidth*dpr; canvas.height=200*dpr;
+  canvas.style.width=wrap.clientWidth+'px'; canvas.style.height='200px';
+  const ctx=canvas.getContext('2d'); const t=tickers.find(x=>x.id===ptSelectedId);
+  const n=rangePts[ptRange]; const prices=genPrices(t.price,n); const labels=genLabels(n);
+  const W=canvas.width,H=canvas.height,pad={top:10*dpr,right:10*dpr,bottom:28*dpr,left:50*dpr};
+  const cW=W-pad.left-pad.right,cH=H-pad.top-pad.bottom;
+  const minP=Math.min(...prices)-10,maxP=Math.max(...prices)+10;
+  ctx.clearRect(0,0,W,H);
+  const gridColor='rgba(0,0,0,0.06)',textColor='rgba(0,0,0,0.35)';
+  const lineColor=t.dir==='dn'?'#E24B4A':'#D85A30';
+  ctx.strokeStyle=gridColor; ctx.lineWidth=0.5*dpr;
+  for(let i=0;i<=4;i++){const y=pad.top+(cH/4)*i;ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(W-pad.right,y);ctx.stroke();const val=Math.round(maxP-((maxP-minP)/4)*i);ctx.fillStyle=textColor;ctx.font=`${10*dpr}px Barlow,sans-serif`;ctx.textAlign='right';ctx.fillText('$'+val,pad.left-4*dpr,y+3*dpr);}
+  const step=n>1?cW/(n-1):cW; const skip=Math.max(1,Math.floor(n/6));
+  ctx.fillStyle=textColor; ctx.font=`${9*dpr}px Barlow,sans-serif`; ctx.textAlign='center';
+  for(let i=0;i<n;i+=skip){ctx.fillText(labels[i],pad.left+i*step,H-4*dpr);}
+  const xP=i=>pad.left+i*step; const yP=v=>pad.top+cH-((v-minP)/(maxP-minP))*cH;
+  ctx.beginPath(); ctx.moveTo(xP(0),yP(prices[0]));
+  for(let i=1;i<n;i++)ctx.lineTo(xP(i),yP(prices[i]));
+  const grad=ctx.createLinearGradient(0,pad.top,0,H-pad.bottom);
+  grad.addColorStop(0,t.dir==='dn'?'rgba(226,75,74,0.1)':'rgba(216,90,48,0.1)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.lineTo(xP(n-1),H-pad.bottom); ctx.lineTo(xP(0),H-pad.bottom); ctx.closePath(); ctx.fillStyle=grad; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(xP(0),yP(prices[0]));
+  for(let i=1;i<n;i++)ctx.lineTo(xP(i),yP(prices[i]));
+  ctx.strokeStyle=lineColor; ctx.lineWidth=2*dpr; ctx.lineJoin='round'; ctx.stroke();
+  ctx.beginPath(); ctx.arc(xP(n-1),yP(prices[n-1]),4*dpr,0,Math.PI*2); ctx.fillStyle=lineColor; ctx.fill();
+  canvas._meta={prices,labels,n,xP,yP,pad,cW,dpr};
+}
+document.addEventListener('mousemove', e => {
+  const canvas=document.getElementById('pt-canvas'); if(!canvas||!canvas._meta)return;
+  const m=canvas._meta; const rect=canvas.getBoundingClientRect();
+  if(e.clientX<rect.left||e.clientX>rect.right||e.clientY<rect.top||e.clientY>rect.bottom){document.getElementById('pt-tooltip').style.display='none';return;}
+  const mx=(e.clientX-rect.left)*m.dpr; const step=m.n>1?m.cW/(m.n-1):m.cW;
+  let idx=Math.round((mx-m.pad.left)/step); idx=Math.max(0,Math.min(m.n-1,idx));
+  const tt=document.getElementById('pt-tooltip'); tt.style.display='block';
+  tt.style.left=(e.clientX-rect.left-30)+'px'; tt.style.top=(e.clientY-rect.top-56)+'px';
+  document.getElementById('tt-price').textContent='$'+m.prices[idx];
+  document.getElementById('tt-date').textContent=m.labels[idx];
+});
+function addAlert(){const v=document.getElementById('alert-val').value;if(!v)return;ptAlerts.push(v);document.getElementById('alert-val').value='';renderAlerts();}
+function removeAlert(i){ptAlerts.splice(i,1);renderAlerts();}
+function renderAlerts(){document.getElementById('alert-tags').innerHTML=ptAlerts.map((a,i)=>`<div class="alert-tag">🔔 Alert: Rebar below <strong>$${a}/MT</strong><span class="alert-tag-x" onclick="removeAlert(${i})">×</span></div>`).join('');}
+window.addEventListener('resize',()=>{if(document.getElementById('page-prices').classList.contains('active'))drawChart();});
+
+// ── DOCUMENT VAULT ──
+const dvDocs = [
+  {id:1,sec:'cert',name:'Trade License — Mirza Steel Trading LLC',size:'1.2 MB',issuer:'Dubai Economy Dept.',expiry:'May 2026',status:'verified',meta:{'Document No.':'TL-2024-88234','Entity':'Mirza Steel Trading LLC','Issued By':'Dubai Economy','Expiry':'May 2026'}},
+  {id:2,sec:'cert',name:'BIS Certification — Fe500D Grade Rebar',size:'0.8 MB',issuer:'Bureau of Indian Standards',expiry:'Jun 2026',status:'verified',meta:{'Cert No.':'BIS/CM/7382','Standard':'IS 1786:2008','Grade':'Fe500D','Expiry':'Jun 2026'}},
+  {id:3,sec:'cert',name:'ISO 9001:2015 — Quality Management',size:'0.6 MB',issuer:'SGS Group',expiry:'Apr 2026',status:'expiring',meta:{'Cert No.':'SGS-ISO-44821','Scope':'Steel Products Trading','Expiry':'Apr 2026'}},
+  {id:4,sec:'trade',name:'Bill of Lading — BL-2025-441',size:'2.1 MB',issuer:'Maersk Line',expiry:null,status:'verified',meta:{'BL No.':'MAEU-2025-441','Port of Loading':'JNPT Mumbai','Port of Discharge':'Jebel Ali','Cargo':'150 MT TMT Fe500D'}},
+  {id:5,sec:'trade',name:'Letter of Credit — LC-2025-0312',size:'1.8 MB',issuer:'Emirates NBD',expiry:null,status:'verified',meta:{'LC No.':'ENBD-LC-2025-0312','Amount':'USD 101,250','Tenor':'At sight','Beneficiary':'Tata Steel Ltd.'}},
+  {id:6,sec:'trade',name:'Commercial Invoice — INV-2025-087',size:'0.9 MB',issuer:'Mirza Steel Trading',expiry:null,status:'verified',meta:{'Invoice No.':'INV-2025-087','Product':'TMT Fe500D 16mm','Quantity':'150 MT','Total':'USD 101,250'}},
+  {id:7,sec:'mill',name:'Mill Test Certificate — MT2025-112',size:'1.4 MB',issuer:'Tata Steel Ltd.',expiry:null,status:'verified',meta:{'Heat No.':'HT-2025-09812','Yield Strength':'542 N/mm²','Tensile Strength':'658 N/mm²','Elongation':'18.4%'}},
+  {id:8,sec:'mill',name:'SGS Third Party Inspection Report',size:'3.2 MB',issuer:'SGS Gulf LLC',expiry:null,status:'verified',meta:{'Inspection No.':'SGS-2025-DXB-4421','Date':'Mar 15, 2025','Result':'PASSED','Scope':'Quantity & Quality Check'}},
+];
+let dvSelected = 1;
+function renderVault(){renderDvSection('dv-cert','cert');renderDvSection('dv-trade','trade');renderDvSection('dv-mill','mill');renderDvPreview();}
+function renderDvSection(elId, sec){
+  const el=document.getElementById(elId); if(!el)return;
+  const docs=dvDocs.filter(d=>d.sec===sec);
+  el.innerHTML=docs.map(d=>{
+    const bc=d.status==='verified'?'b-verified':d.status==='expiring'?'b-expiring':'b-pending';
+    return `<div class="dv-doc-row${d.id===dvSelected?' sel':''}" onclick="selectDoc(${d.id})">
+      <div class="doc-icon pdf"><svg width="14" height="18" viewBox="0 0 14 18" fill="none"><rect x="1" y="1" width="9" height="16" rx="1.5" stroke="currentColor" stroke-width="1"/><path d="M9 1l3 3h-3V1z" fill="currentColor" opacity=".3"/></svg><div style="margin-top:2px;font-size:7px;">PDF</div></div>
+      <div style="flex:1;min-width:0;"><div class="doc-name">${d.name}</div><div class="doc-meta"><span>${d.size}</span><span>${d.issuer}</span>${d.expiry?`<span>Exp: ${d.expiry}</span>`:''}</div></div>
+      <span class="badge ${bc}">${d.status.charAt(0).toUpperCase()+d.status.slice(1)}</span>
+      <div style="display:flex;gap:4px;"><button class="tb-btn" style="padding:4px 8px;font-size:10px;" onclick="event.stopPropagation();">View</button><button class="tb-btn" style="padding:4px 8px;font-size:10px;" onclick="event.stopPropagation();">Share</button></div>
+    </div>`;
+  }).join('');
+}
+function selectDoc(id){dvSelected=id;renderVault();}
+function renderDvPreview(){
+  const d=dvDocs.find(x=>x.id===dvSelected); const el=document.getElementById('dv-preview'); if(!d||!el)return;
+  el.innerHTML=`<div class="preview-panel"><div class="preview-head"><div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px;">${d.name}</div><div style="font-size:11px;color:var(--text3);">${d.issuer} · ${d.size}</div></div><div class="preview-body">${Object.entries(d.meta).map(([k,v])=>`<div class="preview-row"><span style="color:var(--text3);">${k}</span><span style="font-weight:500;">${v}</span></div>`).join('')}</div><div class="preview-actions"><button class="submit-btn" style="font-size:12px;padding:9px;">Analyse with AI →</button><button class="tb-btn" style="width:100%;">Share Document</button><button class="tb-btn" style="width:100%;">Check Compliance</button></div></div>`;
+}
+
+// ── NOTIFICATIONS ──
+const notifications = [
+  {id:1,group:'today',type:'price',unread:true,title:'Price alert — Rebar Fe500D below $670',body:'Rebar CIF Dubai dropped to $668/MT. SAIL India is offering at this price on your active RFQ.',time:'09:18 AM',btns:[{l:'View RFQ',s:'p'},{l:'Dismiss',s:''}]},
+  {id:2,group:'today',type:'rfq',unread:true,title:'Jindal Steel responded to RFQ #2024-041',body:'Jindal Steel quoted $672/MT CIF Dubai for 150 MT. Lead time 14 days. TT 30% advance.',time:'08:55 AM',btns:[{l:'Compare Quotes',s:'p'},{l:'Message Jindal',s:''}]},
+  {id:3,group:'today',type:'msg',unread:true,title:'New message from Tata Steel Ltd.',body:'Tata Steel: "We can hold the 150 MT stock for 5 business days pending your L/C confirmation."',time:'08:42 AM',btns:[{l:'Reply',s:'p'},{l:'Open Chat',s:''}]},
+  {id:4,group:'today',type:'deal',unread:true,title:'Shipment BL-2025-441 — Bill of Lading issued',body:'Maersk Line has issued the Bill of Lading. ETA Jebel Ali: Apr 28, 2026.',time:'07:30 AM',btns:[{l:'View Document',s:'g'},{l:'Track Shipment',s:''}]},
+  {id:5,group:'today',type:'price',unread:true,title:'New listing matches your buy request — HRB400',body:'Baosteel Export listed 500 MT HRB400 12mm at $615/MT — matches your open buy request.',time:'06:15 AM',btns:[{l:'View Listing',s:'p'},{l:'Send RFQ',s:''}]},
+  {id:6,group:'yesterday',type:'rfq',unread:true,title:'SAIL India responded to RFQ #2024-041',body:'SAIL India quoted $668/MT CIF Dubai — lowest offer so far. BIS certified, 7 days validity.',time:'4:42 PM',btns:[{l:'View Quote',s:'p'},{l:'Accept Quote',s:'g'}]},
+  {id:7,group:'yesterday',type:'msg',unread:false,title:'Gulf Construction sent an inquiry',body:'Gulf Construction requested a proforma invoice for 80 MT of Structural Angles DAP Dubai.',time:'2:10 PM',btns:[{l:'Generate Proforma',s:'p'},{l:'Reply',s:''}]},
+  {id:8,group:'yesterday',type:'doc',unread:false,title:'ISO 9001:2015 certificate expires in 12 days',body:'Your ISO 9001 certificate from SGS Group expires Apr 23, 2026. Renew to keep verified status.',time:'9:00 AM',btns:[{l:'View Certificate',s:''},{l:'Renew Now',s:'p'}]},
+  {id:9,group:'older',type:'deal',unread:false,title:'Deal #2025-441 — L/C accepted by Tata Steel',body:'Emirates NBD confirms Tata Steel accepted LC-2025-0312. Loading scheduled Apr 14, 2026.',time:'Apr 9',btns:[{l:'View Deal',s:'p'}]},
+];
+let ntFilter='all';
+function renderNotifications(){
+  const feed=document.getElementById('nt-feed'); if(!feed)return;
+  const groups=[{key:'today',label:'Today'},{key:'yesterday',label:'Yesterday'},{key:'older',label:'Earlier'}];
+  feed.innerHTML=groups.map(g=>{
+    const items=notifications.filter(n=>n.group===g.key&&(ntFilter==='all'||(ntFilter==='unread'&&n.unread)||n.type===ntFilter));
+    if(!items.length)return'';
+    const typeBadge=t=>({price:'<span style="background:#FAEEDA;color:#854F0B;" class="badge">Price</span>',rfq:'<span style="background:#E1F5EE;color:#0F6E56;" class="badge">RFQ</span>',msg:'<span style="background:#E6F1FB;color:#185FA5;" class="badge">Message</span>',doc:'<span style="background:#EEEDFE;color:#3C3489;" class="badge">Document</span>',deal:'<span style="background:#FAECE7;color:#993C1D;" class="badge">Deal</span>'}[t]||'');
+    return `<div class="nt-group-label">${g.label}</div>`+items.map(n=>`
+      <div class="nt-item${n.unread?' unread':''}" onclick="markNtRead(${n.id})">
+        <div class="nt-content">
+          <div class="nt-top"><div class="nt-title">${typeBadge(n.type)} ${n.title}</div><div style="font-size:11px;color:var(--text3);flex-shrink:0;margin-left:8px;">${n.time}</div></div>
+          <div class="nt-body-text">${n.body}</div>
+          <div class="nt-actions">${n.btns.map(b=>`<button class="nt-btn ${b.s}">${b.l}</button>`).join('')}</div>
+        </div>
+        ${n.unread?'<div class="unread-dot" style="margin-top:4px;"></div>':''}
+      </div>`).join('');
+  }).join('');
+}
+function setNtFilter(f,btn){ntFilter=f;document.querySelectorAll('#page-notifications .pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');renderNotifications();}
+function markNtRead(id){const n=notifications.find(x=>x.id===id);if(n)n.unread=false;renderNotifications();}
+function markAllRead(){notifications.forEach(n=>n.unread=false);renderNotifications();}
+function toggleEl(btn){const on=btn.classList.contains('on');btn.classList.toggle('on',!on);btn.classList.toggle('off',on);}
+
+// ── INIT ──
+renderListings();
+</script>
+</body>
+</html>

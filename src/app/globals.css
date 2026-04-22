@@ -1,0 +1,68 @@
+/* Google Fonts — must be first @import */
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap');
+
+@import "tailwindcss";
+
+/* ── STEELXCHANGE DESIGN TOKENS ── */
+@theme inline {
+  /* Brand colors */
+  --color-accent:   #D85A30;
+  --color-accent2:  #993C1D;
+  --color-green:    #1D9E75;
+  --color-green2:   #0F6E56;
+  --color-blue:     #185FA5;
+  --color-amber:    #854F0B;
+  --color-red:      #A32D2D;
+
+  /* Surface colors */
+  --color-bg:       #F5F4F1;
+  --color-surface:  #FFFFFF;
+  --color-surface2: #F0EDE8;
+  --color-sidebar:  #1A1917;
+
+  /* Text colors */
+  --color-text:     #1A1917;
+  --color-text2:    #5A574F;
+  --color-text3:    #9B9890;
+
+  /* Badge backgrounds */
+  --color-sell-bg:  #FAECE7;
+  --color-buy-bg:   #E1F5EE;
+  --color-urgent-bg: #FAEEDA;
+
+  /* Fonts */
+  --font-sans: 'Barlow', sans-serif;
+  --font-condensed: 'Barlow Condensed', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #F5F4F1;
+  color: #1A1917;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+}
+
+/* Condensed font utility */
+.font-condensed {
+  font-family: 'Barlow Condensed', sans-serif;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,0.25);
+}
