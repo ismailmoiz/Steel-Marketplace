@@ -27,18 +27,19 @@ export async function proxy(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   // Routes that don't require login
-  const publicRoutes = ['/', '/auth/login', '/auth/signup', '/auth/reset-password', '/auth/callback']
+  // Note: (auth) is a Next.js route group — the actual URLs are /login, /signup, etc.
+  const publicRoutes = ['/', '/login', '/signup', '/reset-password', '/api/auth/callback']
   const isPublicRoute = publicRoutes.some(route => request.nextUrl.pathname === route)
 
   // If not logged in and trying to access a protected route → redirect to login
   if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone()
-    url.pathname = '/auth/login'
+    url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
   // If logged in and trying to access auth pages → redirect to marketplace
-  if (user && request.nextUrl.pathname.startsWith('/auth')) {
+  if (user && ['/login', '/signup', '/reset-password'].includes(request.nextUrl.pathname)) {
     const url = request.nextUrl.clone()
     url.pathname = '/marketplace'
     return NextResponse.redirect(url)
